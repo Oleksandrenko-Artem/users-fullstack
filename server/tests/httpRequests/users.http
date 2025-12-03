@@ -1,0 +1,99 @@
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+  "firstName":"Jane",
+  "lastName": "Dou",
+  "email":"m8@m.com",
+  "passwHash": "123",
+  "birthday":"1990-12-01",
+  "gender":"female"
+}
+
+###
+
+GET http://localhost:5000/api/users?page=2&results=2
+
+### 200
+
+GET http://localhost:5000/api/users/31
+
+### 404
+
+GET http://localhost:5000/api/users/111
+
+### 200
+
+DELETE http://localhost:5000/api/users/30
+
+### 404
+
+DELETE http://localhost:5000/api/users/111
+
+### 200
+
+PATCH  http://localhost:5000/api/users/31
+Content-Type: application/json
+
+{
+    "passwHash": "newpassw"
+}
+
+### 404
+
+PATCH  http://localhost:5000/api/users/111
+Content-Type: application/json
+
+{
+    "lastName": "Newdou"
+}
+
+### 500 (422)
+
+PATCH  http://localhost:5000/api/users/31
+Content-Type: application/json
+
+{
+    "firstName": "545153153"
+}
+
+### update if doesn`t exist OR create if exists
+### update - 200 {}
+
+PUT http://localhost:5000/api/users/31
+Content-Type: application/json
+
+{
+  "firstName":"Jane",
+  "lastName": "Dou",
+  "email":"m100@m.com",
+  "passwHash": "123",
+  "birthday":"1990-12-01",
+  "gender":"female"    
+}
+
+### create - 201 {}
+
+PUT http://localhost:5000/api/users/1000
+Content-Type: application/json
+
+{
+  "firstName":"Jane",
+  "lastName": "Dou",
+  "email":"m101@m.com",
+  "passwHash": "123",
+  "birthday":"1990-12-01",
+  "gender":"female"    
+}
+
+### 200
+
+GET http://localhost:5000/api/users/31/tasks 
+
+### 200 - []
+
+GET http://localhost:5000/api/users/1000/tasks 
+
+### 404
+
+GET http://localhost:5000/api/users/111/tasks 
