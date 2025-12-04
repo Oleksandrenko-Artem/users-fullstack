@@ -17,7 +17,10 @@ export const UsersList = ({ isFetching, error }) => {
       {error && <div>!!!ERROR!!!</div>}
       <ul>
         {users.map(u => (
-          <li key={u.id}>{JSON.stringify(u)}</li>
+          <li key={u.id}>
+            <img src={u.image ? `http://localhost:5000/images/${u.image}` : defImage} alt={`${u.firstName} ${u.lastName}`} className={styles.userImage} />
+            <p>{JSON.stringify(u)}</p>
+          </li>
         ))}
       </ul>
     </>
