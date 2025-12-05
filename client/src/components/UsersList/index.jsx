@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { getUsersThunk } from '../../store/slices/usersSlice';
 import BeatLoader from 'react-spinners/BeatLoader';
 import styles from './UsersList.module.sass';
 import defImage from './defaultPhoto.jpg';
 
-export const UsersList = ({ isFetching, error }) => {
-  const [users, setUsers] = useState([]);
+export const UsersList = ({ users, isFetching, error, getUsers }) => {
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
-      .then(response => response.json())
-      .then(data => setUsers(data.data)).catch(err => console.log('error ====>', err));
-  }, []);
+    getUsers();
+  }, [getUsers]);
   return (
     <>
       <BeatLoader loading={isFetching} />
@@ -29,6 +27,8 @@ export const UsersList = ({ isFetching, error }) => {
 
 const mapStateToProps = ({ usersData }) => usersData;
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  getUsers: ()=>dispatch(getUsersThunk())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(UsersList);
