@@ -1,9 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { USER_VALIDATION_SCHEMA } from '../../../utils/validate/validationSchemas';
 import Input from '../Input';
 import CONSTANTS from './../../../constants';
 import styles from './UserForm.module.sass';
+import { createUserThunk } from '../../../store/slices/usersSlice';
 
 const { GENDERS } = CONSTANTS;
 
@@ -12,15 +13,21 @@ function UserForm () {
     firstName: '',
     lastName: '',
     email: '',
-    passwordHash: '',
+    passwHash: '',
     birthday: '',
     gender: GENDERS[0],
     // userPhoto: '',
   };
 
-  const handleSubmit = (values, formikBag) => {
-    console.log('values :>> ', values);
-    formikBag.resetForm();
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (values, formikBag) => {
+    try {
+      await dispatch(createUserThunk(values)).unwrap();
+      formikBag.resetForm();
+    } catch (err) {
+      // keep simple: errors handled elsewhere
+    }
   };
 
   const classes = {
@@ -63,7 +70,7 @@ function UserForm () {
           <Input
             label='Password:'
             type='password'
-            name='passwordHash'
+            name='passwHash'
             classes={classes}
           />
           <Input
@@ -90,6 +97,4 @@ function UserForm () {
   );
 }
 
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(null, mapDispatchToProps)(UserForm);
+export default UserForm;

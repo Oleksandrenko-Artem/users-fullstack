@@ -17,7 +17,7 @@ export const USER_VALIDATION_SCHEMA = yup.object({
   firstName: NAME_VALIDATION_SCHEMA,
   lastName: NAME_VALIDATION_SCHEMA,
   email: yup.string().email().required(),
-  passwordHash: yup.string().required(),
+  passwHash: yup.string().required(),
   birthday: yup.date().max(new Date()),
   gender: yup.string().oneOf(GENDERS),
   userPhoto: yup.mixed(),

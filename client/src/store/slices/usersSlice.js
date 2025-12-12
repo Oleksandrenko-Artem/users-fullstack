@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { deleteUsers, getUsers } from './../../api/index';
+import { deleteUsers, getUsers, postUsers } from './../../api/index';
 
 const USERS_SLICE_NAME = 'users';
 
@@ -18,6 +18,18 @@ export const getUsersThunk = createAsyncThunk(`${USERS_SLICE_NAME}/getUsers`, as
     return thunkAPI.rejectWithValue({});
   }
 });
+
+export const createUserThunk = createAsyncThunk(
+  `${USERS_SLICE_NAME}/createUsers`,
+  async (data, thunkAPI) => {
+    try {
+      const result = await postUsers(data);
+      return result.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({});
+    }
+  }
+);
 
 export const deleteUsersThunk = createAsyncThunk(`${USERS_SLICE_NAME}/deleteUsers`, async (id, thunkAPI) => {
   try {
@@ -41,6 +53,10 @@ const usersSlice = createSlice({
       state.isFetching = true;
       state.error = null;
     });
+    builder.addCase(createUserThunk.pending, state => {
+      state.isFetching = true;
+      state.error = null;
+    });
     builder.addCase(getUsersThunk.fulfilled, (state, action) => {
       state.isFetching = false;
       state.users = action.payload;
@@ -49,11 +65,20 @@ const usersSlice = createSlice({
       state.isFetching = false;
       state.users = state.users.filter(u => u.id !== action.payload);
     });
+    builder.addCase(createUserThunk.fulfilled, (state, action) => {
+      state.isFetching = false;
+      // append created user to the list
+      state.users = Array.isArray(state.users) ? [...state.users, action.payload] : [action.payload];
+    });
     builder.addCase(getUsersThunk.rejected, (state, action)  => {
       state.isFetching = false;
       state.error = action.payload;
     });
     builder.addCase(deleteUsersThunk.rejected, (state, action) => {
+      state.isFetching = false;
+      state.error = null;
+    });
+    builder.addCase(createUserThunk.rejected, (state, action) => {
       state.isFetching = false;
       state.error = null;
     });
