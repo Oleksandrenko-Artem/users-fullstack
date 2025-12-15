@@ -8,7 +8,7 @@ const usersRouter = Router();
 usersRouter
   .route('/')
   .get(paginate.paginateUsers, usersController.getUsers)
-  .post(usersController.createUser);
+  .post(upload.uploadUserPhoto, usersController.createUser);
 
 usersRouter
   .route('/:id')

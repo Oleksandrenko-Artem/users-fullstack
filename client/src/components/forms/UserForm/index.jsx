@@ -16,18 +16,24 @@ function UserForm () {
     passwHash: '',
     birthday: '',
     gender: GENDERS[0],
-    // userPhoto: '',
+    userPhoto: '',
   };
 
   const dispatch = useDispatch();
 
   const handleSubmit = async (values, formikBag) => {
-    try {
-      await dispatch(createUserThunk(values)).unwrap();
-      formikBag.resetForm();
-    } catch (err) {
-      // keep simple: errors handled elsewhere
+    const formData = new FormData();
+    formData.append('firstName', values.firstName)
+    formData.append('lastName', values.lastName)
+    formData.append('email', values.email)
+    formData.append('passwHash', values.passwHash)
+    formData.append('birthday', values.birthday)
+    formData.append('gender', values.gender)
+    if (values.userPhoto) {
+      formData.append('userPhoto', values.userPhoto)
     }
+    dispatch(createUserThunk(formData));
+    formikBag.resetForm();
   };
 
   const classes = {
@@ -88,7 +94,15 @@ function UserForm () {
           ))}
           <label>
             <span>Photo:</span>
-            <input type='file' name='userPhoto' />
+            <input 
+              type='file' 
+              name='userPhoto'
+              onChange={(event) => {
+                if (event.currentTarget.files && event.currentTarget.files[0]) {
+                  formikProps.setFieldValue('userPhoto', event.currentTarget.files[0]);
+                }
+              }}
+            />
           </label>
           <button type='submit'>Save</button>
         </Form>

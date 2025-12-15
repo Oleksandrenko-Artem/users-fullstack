@@ -3,21 +3,18 @@ const { User } = require('../db/models');
 const createHttpError = require('http-errors');
 
 module.exports.createUser = async (req, res, next) => {
-  const { body } = req;
+  const { body, file } = req;
 
   try {
+    if (file) {
+      body.image = file.filename;
+    }
+
     const createdUser = await User.create(body);
 
     if (!createdUser) {
       return next(createHttpError(400, 'Something went wrong'));
     }
-
-    // видалити всі непотрібні або сек'юрні властивості
-
-    // const preparedUser = { ...createdUser.get() };
-    // delete preparedUser.passwHash;
-    // delete preparedUser.createdAt;
-    // delete preparedUser.updatedAt;
 
     const preparedUser = _.omit(createdUser.get(), [
       'passwHash',

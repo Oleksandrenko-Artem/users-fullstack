@@ -17,12 +17,14 @@ export const UsersList = ({ users, isFetching, error, getUsers }) => {
     <>
       <BeatLoader loading={isFetching} />
       {error && <div>!!!ERROR!!!</div>}
-      <ul>
+      <ul className={styles.usersList}>
         {users.map(u => (
           <li key={u.id}>
             <img src={u.image ? `http://localhost:5000/images/${u.image}` : defImage} alt={`${u.firstName} ${u.lastName}`} className={styles.userImage} />
-            <p>{JSON.stringify(u)}</p>
-            <button onClick={() => handleDelete(u.id)}>X</button>
+            <div>
+              <p>{JSON.stringify(u)}</p>
+              <button onClick={() => handleDelete(u.id)}>X</button>
+            </div>
           </li>
         ))}
       </ul>
